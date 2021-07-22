@@ -1,14 +1,34 @@
 package programmes;
 
-import java.io.*;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Scanner;
-import java.util.Set;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.*;
+import java.util.stream.Collectors;
+
+class FirstNameComp implements Comparator<Person> {
+
+    @Override
+    public int compare(Person p1, Person p2) {
+        return p1.firstName.compareTo(p2.firstName);
+    }
+}
+class ZipCodeSort implements Comparator<Person>{
+
+    @Override
+    public int compare(Person p1, Person p2) {
+        if (p1.zipCode == p2.zipCode){
+            return 0;
+        }else if (p1.zipCode < p2.zipCode){
+            return 1;
+        }else {return -1;}
+    }
+}
 
 public class AddressBook {
-    Set<Person> list = new HashSet<>();
+    List<Person> list = new ArrayList<>();
     // as we use hashSet here multiple entries are not allowed.
     Scanner sc;
 
@@ -28,7 +48,7 @@ public class AddressBook {
         String city = sc.next();
 
         System.out.print("Enter zip code :: ");
-        String zipCode = sc.next();
+        int zipCode = sc.nextInt();
 
         System.out.print("Enter phone number :: ");
         String phoneNumber = sc.next();
@@ -43,6 +63,7 @@ public class AddressBook {
         }catch (Exception e ){
             System.out.println(e.getMessage());
         }
+
     }
 
     private void editContact() {
@@ -96,7 +117,7 @@ public class AddressBook {
     private void editZipCode(Person person) {
         sc = new Scanner(System.in);
         System.out.print("Enter new zip code here :-> ");
-        person.zipCode = sc.next();
+        person.zipCode = sc.nextInt();
         System.out.println("Done");
 
     }
@@ -171,6 +192,33 @@ public class AddressBook {
         }
         System.out.println("Total number of person from entered city is :-> " + count);
     }
+    private void sortByNameUsingCollections(){
+        Collections.sort(list,new FirstNameComp());
+        System.out.println("The sorted list by name of person is as follows");
+        for (Person person : list){
+            System.out.println(person);
+        }
+    }
+    private void sortByNameUsingStreamAPI() {
+        ArrayList<Person> sortedByName = (ArrayList<Person>) list.stream().sorted(new FirstNameComp()).collect(Collectors.toList());
+        for (Person person : sortedByName){
+            System.out.println(person);
+        }
+    }
+    public  void sortedByZipCodeUsingCollection(){
+        Collections.sort(list,new ZipCodeSort());
+        for (Person person : list){
+            System.out.println(person);
+        }
+
+    }
+    public void sortByZipCodeUsingStreamAPI(){
+        ArrayList<Person> sortByZipCode = (ArrayList<Person>) list.stream().sorted(new ZipCodeSort()).collect(Collectors.toList());
+        for (Person person : sortByZipCode){
+            System.out.println(person);
+        }
+    }
+
     private void readAddressBook() {
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader("addressBook.txt"));
@@ -189,7 +237,7 @@ public class AddressBook {
         AddressBook addressBook = new AddressBook();
         int choice = 0;
         while (choice!=10) {
-            System.out.print("please choose from below\n1-add contact\n2-edit contact\n3-delete person\n4-search person\n5-read addressBook\n10-exit \n:-> ");
+            System.out.print("please choose from below\n1-add contact\n2-edit contact\n3-delete person\n4-search person\n5-sort by name\n6-print file\n10-exit \n:-> ");
             choice = sc.nextInt();
             switch (choice) {
                 case 1:
@@ -204,11 +252,14 @@ public class AddressBook {
                 case 4:
                     addressBook.searchByCity();
                     break;
-                case 5:
-                    addressBook.readAddressBook();
+                case 5 :
+                    addressBook.sortByNameUsingStreamAPI();
                     break;
+                case 6 :
+                    addressBook.readAddressBook();
                 case 10:
                     break;
+
             }
         }
     }

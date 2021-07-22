@@ -5,11 +5,11 @@ public class Person {
     String lastName;
     String address;
     String city;
-    String zipCode;
+    int zipCode;
     String phoneNumber;
     String email;
 
-    public Person(String firstName, String lastName, String address, String city, String zipCode, String phoneNumber, String email) {
+    public Person(String firstName, String lastName, String address, String city, int zipCode, String phoneNumber, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
